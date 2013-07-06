@@ -14,7 +14,7 @@ node default {
   }
 
   # remote provision based on IP
-  if $::ipaddress == "192.241.201.166" {
+  if $::ipaddress == "000.111.0.1" {
     include 'node_qa_db01'
   }
 }

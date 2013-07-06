@@ -4,9 +4,15 @@ Similar to [knife-solo](http://matschaffer.github.io/knife-solo/) for use with [
 
 ## Hello World - Puppet Solo
 
-This sample code will do some provisioning of puppet scripts onto a server. It contains both a [Vagrant](http://docs.vagrantup.com/v2/getting-started/index.html) file for local testing and steps to deploy to a remote server. The sample installs a postgres database server.
+This sample code will provision a server using puppet scripts. It contains both a [Vagrant](http://docs.vagrantup.com/v2/getting-started/index.html) file for local testing and steps to deploy to a remote server. The sample installs a postgres database server.
 
 ### Setup 
+
+* clone the repo
+
+```
+git clone https://github.com/house9/puppet-solo-hello-world.git
+```
 
 * Install some gems (optionally create a gemset first)
   * supply_drop (also installs capistrano)
@@ -41,42 +47,46 @@ librarian-puppet install --verbose --clean
 vagrant up
 # verify postgres was installed
 vagrant ssh
-# swithc to postgres and list all databases on server
+# switch to postgres user and list all databases on server
 sudo su - postgres
 psql --version
 psql -c "\l"
 # use 'vagrant destroy' and/or 'vagrant provision' if needed for debugging
 ```
 
-## Notes
+### Provision a server
+
+* Get a box (DigitalOcean, Linode, Local Network box, etc…) to provision, you will need root privileges, this example uses a Digital Ocean Droplet
+  * create a new droplet and select Ubuntu 12.04 and if you uploaded your public ssh key previously then select it when creating the droplet (no password needed)
+  * for the example assume our IP is 000.111.0.1, change this as needed
+* Review the Capfile and the manifests/default.pp file
+  * update with your real IP or host name as needed (in both files)
+  * NOTE: grouping all servers into roles is not required, but is convienent when dealing with multiple servers. Requires specifying the role when running `cap` commands (as is done below)
 
 ```
-# create puppetfile
-librarian-puppet init
-# install modules after updating Puppetfile
-librarian-puppet install --verbose --clean
-# create Vagrant file
-vagrant init
-
-```
-
-### supply_drop
-
-```
-# verify can connect to server and run command
-cap invoke COMMAND="pwd"
-# bootstrap puppet on target box, also runs apt-get update
-cap puppet:bootstrap:ubuntu
-# run a noop to see what puppet plans to do
-cap puppet:noop
+# ssh to the server to add it to 'known hosts'
+ssh root@000.111.0.1
+exit
+# verify capistrano is working
+cap qa invoke COMMAND="echo 'hello supply-drop'"
+# bootstrap the server using capistrano and supply_drop
+cap qa puppet:bootstrap:ubuntu
 # provision
-cap puppet:apply
+cap qa puppet:apply
+# optionally you can do a noop to see what it wants to provision
+cap qa puppet:noop
+
+# verify postgres was installed
+ssh root@000.111.0.1
+# switch to postgres user and list all databases on server
+sudo su - postgres
+psql --version
+psql -c "\l"
 ```
 
-## Links
+## Resources
 
-* [https://rubygems.org/gems/librarian-puppet](https://rubygems.org/gems/librarian-puppet)
-* [https://rubygems.org/gems/puppet](https://rubygems.org/gems/puppet)
-* [https://github.com/pitluga/supply_drop](https://github.com/pitluga/supply_drop)
 * [http://www.confreaks.com/videos/2479-railsconf2013-devops-for-the-rubyist-soul](http://www.confreaks.com/videos/2479-railsconf2013-devops-for-the-rubyist-soul)
 * [https://speakerdeck.com/jtdowney/devops-for-the-rubyist-soul-at-rubynation-2013](https://speakerdeck.com/jtdowney/devops-for-the-rubyist-soul-at-rubynation-2013)
+
+
