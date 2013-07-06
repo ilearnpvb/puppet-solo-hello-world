@@ -1,6 +1,6 @@
 # Puppet Solo (AKA: supply_drop)
 
-Similar to [knife-solo](http://matschaffer.github.io/knife-solo/) for use with [chef](http://www.opscode.com/chef/), [supply_drop](https://github.com/pitluga/supply_drop) allows you to provision servers without the need for a [puppet](https://puppetlabs.com/) master server. It uses [capistrano](https://github.com/capistrano/capistrano) for executing commands on the remote server.
+Similar to [knife-solo](http://matschaffer.github.io/knife-solo/) for use with [chef](http://www.opscode.com/chef/), [supply_drop](https://github.com/pitluga/supply_drop) allows you to provision servers using [puppet](https://puppetlabs.com/) without the need for a puppet master server. It uses [capistrano](https://github.com/capistrano/capistrano) for executing commands on the remote server.
 
 ## Hello World - Puppet Solo
 
@@ -56,12 +56,13 @@ psql -c "\l"
 
 ### Provision a server
 
-* Get a box (DigitalOcean, Linode, Local Network box, etc…) to provision, you will need root privileges, this example uses a Digital Ocean Droplet
-  * create a new droplet and select Ubuntu 12.04 and if you uploaded your public ssh key previously then select it when creating the droplet (no password needed)
+* Get a box (DigitalOcean, Linode, Local Network box, etc…) to provision - you will need root privileges; this example uses a Digital Ocean Droplet
+  * create a new droplet and select Ubuntu 12.04
+  * if you previously uploaded your public ssh key to DigitalOcean then select it when creating the droplet (no password needed)
   * for the example assume our IP is 000.111.0.1, change this as needed
 * Review the Capfile and the manifests/default.pp file
   * update with your real IP or host name as needed (in both files)
-  * NOTE: grouping all servers into roles is not required, but is convienent when dealing with multiple servers. Requires specifying the role when running `cap` commands (as is done below)
+  * NOTE: grouping all servers into roles is not required, but is convienent when dealing with multiple servers. Using roles requires specifying the role when running `cap` commands (as is done below)
 
 ```
 # ssh to the server to add it to 'known hosts'
@@ -73,7 +74,7 @@ cap qa invoke COMMAND="echo 'hello supply-drop'"
 cap qa puppet:bootstrap:ubuntu
 # provision
 cap qa puppet:apply
-# optionally you can do a noop to see what it wants to provision
+# optionally you can do a noop to see what it wants to provision before running apply
 cap qa puppet:noop
 
 # verify postgres was installed
