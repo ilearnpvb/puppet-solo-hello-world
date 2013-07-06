@@ -6,11 +6,11 @@ Similar to [knife-solo](http://matschaffer.github.io/knife-solo/) for use with [
 
 This sample code will provision a server using puppet scripts. It contains both a [Vagrant](http://docs.vagrantup.com/v2/getting-started/index.html) file for local testing and steps to deploy to a remote server. The sample installs a postgres database server.
 
-### Setup 
+### Setup
 
 * clone the repo
 
-```
+```bash
 git clone https://github.com/house9/puppet-solo-hello-world.git
 ```
 
@@ -19,17 +19,17 @@ git clone https://github.com/house9/puppet-solo-hello-world.git
   * librarian-puppet
   * puppet
 
-```
+```bash
 # install needed gems from Gemfile
 bundle install
 
 ```
 
 * Install the puppet modules using librarian-puppet
-  * Installs all specified modules as well as their dependencies 
+  * Installs all specified modules as well as their dependencies
   * NOTE: this will put the modules under the modules directory, currently ignored in .gitigore file
 
-```
+```bash
 # install needed puppet modules from Puppetfile
 librarian-puppet install
 # sometimes you might want to use verbose or clean options
@@ -42,7 +42,7 @@ librarian-puppet install --verbose --clean
 * Modify the Vagrantfile as needed
   * currently uses precise64 box (Ubuntu 12.04 64-bit)
 
-```
+```bash
 # create new virtual machine and provision it
 vagrant up
 # verify postgres was installed
@@ -64,7 +64,7 @@ psql -c "\l"
   * update with your real IP or host name as needed (in both files)
   * NOTE: grouping all servers into roles is not required, but is convienent when dealing with multiple servers. Using roles requires specifying the role when running `cap` commands (as is done below)
 
-```
+```bash
 # ssh to the server to add it to 'known hosts'
 ssh root@000.111.0.1
 exit
